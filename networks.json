@@ -1,0 +1,20 @@
+{
+  "mainnet": {
+    "Staking": {
+      "address": "0x000000000000000000000000000000000000f000",
+      "startBlock": 0
+    }
+  },
+  "testnet": {
+    "Staking": {
+      "address": "0x000000000000000000000000000000000000f000",
+      "startBlock": 0
+    }
+  },
+  "localhost": {
+    "Staking": {
+      "address": "0x000000000000000000000000000000000000f000",
+      "startBlock": 0
+    }
+  }
+}

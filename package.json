@@ -1,0 +1,37 @@
+{
+  "name": "nero-staking-subgraph",
+  "version": "1.0.0",
+  "description": "Subgraph for tracking validator delegators and staking activities",
+  "main": "index.js",
+  "scripts": {
+    "prepare": "node scripts/generate-subgraph.js",
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "create": "graph create --node http://subgraph.mainnet.nero.metaborong.com:8020 validator-subgraph",
+    "remove": "graph remove --node https://subgraph.mainnet.nero.metaborong.com/ validator-subgraph",
+    "create-local": "graph create --node http://localhost:8020/ validator-subgraph",
+    "remove-local": "graph remove --node http://localhost:8020/ validator-subgraph",
+    "deploy": "graph deploy --node http://subgraph.mainnet.nero.metaborong.com:8020 --ipfs https://api.thegraph.com/ipfs/ validator-subgraph",
+    "deploy:local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 validator-subgraph",
+    "generate": "npm run prepare && npm run codegen",
+    "build:all": "npm run prepare && npm run codegen && npm run build",
+    "test": "graph test"
+  },
+  "keywords": [
+    "subgraph",
+    "ethereum",
+    "staking",
+    "validator",
+    "delegation",
+    "thegraph"
+  ],
+  "author": "yuu11111",
+  "license": "MIT",
+  "dependencies": {
+    "@graphprotocol/graph-cli": "^0.56.0",
+    "@graphprotocol/graph-ts": "0.31.0"
+  },
+  "devDependencies": {
+    "matchstick-as": "0.5.0"
+  }
+}

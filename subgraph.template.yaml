@@ -1,0 +1,45 @@
+specVersion: 0.0.7
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: Staking
+    network: ${NETWORK}
+    source:
+      address: "${ADDRESS}"
+      abi: Staking
+      startBlock: ${START_BLOCK}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities: []
+      abis:
+        - name: Staking
+          file: ./abi/Staking.json
+      eventHandlers:
+        - event: AdminChanged(indexed address,indexed address)
+          handler: handleAdminChanged
+        - event: AdminChanging(indexed address)
+          handler: handleAdminChanging
+        - event: ClaimWithoutUnboundStake(indexed address)
+          handler: handleClaimWithoutUnboundStake
+        - event: FounderUnlocked(indexed address)
+          handler: handleFounderUnlocked
+        - event: LogDecreaseMissedBlocksCounter()
+          handler: handleLogDecreaseMissedBlocksCounter
+        - event: LogDoubleSignPunishValidator(indexed address,uint256)
+          handler: handleLogDoubleSignPunishValidator
+        - event: LogLazyPunishValidator(indexed address,uint256)
+          handler: handleLogLazyPunishValidator
+        - event: PermissionLess(indexed bool)
+          handler: handlePermissionLess
+        - event: StakeWithdrawn(indexed address,indexed address,uint256)
+          handler: handleStakeWithdrawn
+        - event: StakingRewardsEmpty(bool)
+          handler: handleStakingRewardsEmpty
+        - event: TotalStakeChanged(indexed address,uint256,uint256)
+          handler: handleTotalStakeChanged
+        - event: ValidatorRegistered(indexed address,indexed address,uint256,uint256,uint8)
+          handler: handleValidatorRegistered
+      file: ./src/mappings/Staking.ts

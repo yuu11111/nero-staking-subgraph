@@ -1,0 +1,86 @@
+type StakingGlobal @entity {
+  id: ID!
+  admin: Bytes
+  pendingAdmin: Bytes
+  totalStake: BigInt!
+  totalValidators: Int!
+  permissionlessOpen: Boolean
+  stakingRewardsEmpty: Boolean
+  accRewardsPerStake: BigInt
+  lastUpdateAccBlock: BigInt
+  updatedAt: BigInt!
+}
+
+type Validator @entity {
+  id: ID!
+  manager: Bytes
+  commissionRate: BigInt
+  stake: BigInt!
+  debt: BigInt
+  incomeFees: BigInt
+  unWithdrawn: BigInt
+  state: Int
+  createdAt: BigInt!
+  updatedAt: BigInt!
+}
+
+type Withdrawal @entity {
+  id: ID!
+  validator: Validator!
+  recipient: Bytes!
+  amount: BigInt!
+  txHash: Bytes!
+  blockNumber: BigInt!
+  timestamp: BigInt!
+}
+
+type AdminChange @entity {
+  id: ID!
+  oldAdmin: Bytes
+  newAdmin: Bytes
+  pending: Boolean!
+  txHash: Bytes!
+  blockNumber: BigInt!
+  timestamp: BigInt!
+}
+
+type Punishment @entity {
+  id: ID!
+  validator: Validator!
+  kind: String!
+  time: BigInt!
+  blockNumber: BigInt!
+  timestamp: BigInt!
+}
+
+type TotalStakeChange @entity {
+  id: ID!
+  changer: Bytes!
+  oldStake: BigInt!
+  newStake: BigInt!
+  blockNumber: BigInt!
+  timestamp: BigInt!
+}
+
+type PermissionToggle @entity {
+  id: ID!
+  opened: Boolean!
+  blockNumber: BigInt!
+  timestamp: BigInt!
+}
+
+type ClaimWithoutUnbound @entity {
+  id: ID!
+  val: Validator!
+  txHash: Bytes!
+  blockNumber: BigInt!
+  timestamp: BigInt!
+}
+
+type FounderUnlock @entity {
+  id: ID!
+  val: Validator!
+  txHash: Bytes!
+  blockNumber: BigInt!
+  timestamp: BigInt!
+}
