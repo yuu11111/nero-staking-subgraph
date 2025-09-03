@@ -84,3 +84,15 @@ type FounderUnlock @entity {
   blockNumber: BigInt!
   timestamp: BigInt!
 }
+
+type DelegationAction @entity {
+  id: ID!
+  kind: String! # add | sub | exit | re
+  val: Validator!
+  from: Bytes!
+  amount: BigInt # may be null for exit (not specified in call)
+  toVal: Validator # for reDelegation new validator
+  txHash: Bytes!
+  blockNumber: BigInt!
+  timestamp: BigInt!
+}

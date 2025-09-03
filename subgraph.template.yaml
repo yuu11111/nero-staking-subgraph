@@ -42,4 +42,13 @@ dataSources:
           handler: handleTotalStakeChanged
         - event: ValidatorRegistered(indexed address,indexed address,uint256,uint256,uint8)
           handler: handleValidatorRegistered
+      callHandlers:
+        - function: addDelegation(address)
+          handler: handleAddDelegation
+        - function: subDelegation(address,uint256)
+          handler: handleSubDelegation
+        - function: exitDelegation(address)
+          handler: handleExitDelegation
+        - function: reDelegation(address,address,uint256)
+          handler: handleReDelegation
       file: ./src/mappings/Staking.ts

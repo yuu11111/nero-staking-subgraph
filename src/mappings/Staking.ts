@@ -12,6 +12,10 @@ import {
   TotalStakeChanged as TotalStakeChangedEvent,
   ValidatorRegistered as ValidatorRegisteredEvent,
   Staking as StakingContract,
+  AddDelegationCall,
+  SubDelegationCall,
+  ExitDelegationCall,
+  ReDelegationCall,
 } from "../../generated/Staking/Staking";
 import {
   AdminChange,
@@ -23,6 +27,7 @@ import {
   TotalStakeChange,
   Validator,
   Withdrawal,
+  DelegationAction,
 } from "../../generated/schema";
 import { BigInt, Address, ethereum } from "@graphprotocol/graph-ts";
 
@@ -267,4 +272,90 @@ export function handleLogDecreaseMissedBlocksCounter(
   _: LogDecreaseMissedBlocksCounterEvent
 ): void {
   // Event emitted without params; we could track a counter if needed in the future.
+}
+
+// ============ Call Handlers ============
+
+function newDelegationActionId(
+  block: ethereum.Block,
+  tx: ethereum.Transaction,
+  logIndex: BigInt | null = null
+): string {
+  // Calls don't have logIndex; use nonce + block + tx hash
+  return (
+    tx.hash.toHex() +
+    "-" +
+    block.number.toString() +
+    (logIndex ? "-" + logIndex.toString() : "")
+  );
+}
+
+export function handleAddDelegation(call: AddDelegationCall): void {
+  let contract = StakingContract.bind(call.to);
+  let v = getOrCreateValidator(call.inputs._val, call.block, contract);
+  v.save();
+  let a = new DelegationAction(
+    newDelegationActionId(call.block, call.transaction)
+  );
+  a.kind = "add";
+  a.val = v.id;
+  a.from = call.from;
+  a.amount = call.transaction.value; // value is staked amount for payable
+  a.txHash = call.transaction.hash;
+  a.blockNumber = call.block.number;
+  a.timestamp = call.block.timestamp;
+  a.save();
+}
+
+export function handleSubDelegation(call: SubDelegationCall): void {
+  let contract = StakingContract.bind(call.to);
+  let v = getOrCreateValidator(call.inputs._val, call.block, contract);
+  v.save();
+  let a = new DelegationAction(
+    newDelegationActionId(call.block, call.transaction)
+  );
+  a.kind = "sub";
+  a.val = v.id;
+  a.from = call.from;
+  a.amount = call.inputs._amount;
+  a.txHash = call.transaction.hash;
+  a.blockNumber = call.block.number;
+  a.timestamp = call.block.timestamp;
+  a.save();
+}
+
+export function handleExitDelegation(call: ExitDelegationCall): void {
+  let contract = StakingContract.bind(call.to);
+  let v = getOrCreateValidator(call.inputs._val, call.block, contract);
+  v.save();
+  let a = new DelegationAction(
+    newDelegationActionId(call.block, call.transaction)
+  );
+  a.kind = "exit";
+  a.val = v.id;
+  a.from = call.from;
+  a.txHash = call.transaction.hash;
+  a.blockNumber = call.block.number;
+  a.timestamp = call.block.timestamp;
+  a.save();
+}
+
+export function handleReDelegation(call: ReDelegationCall): void {
+  let contract = StakingContract.bind(call.to);
+  let oldV = getOrCreateValidator(call.inputs._oldVal, call.block, contract);
+  let newV = getOrCreateValidator(call.inputs._newVal, call.block, contract);
+  oldV.save();
+  newV.save();
+  let a = new DelegationAction(
+    newDelegationActionId(call.block, call.transaction)
+  );
+  a.kind = "re";
+  a.val = oldV.id;
+  a.toVal = newV.id;
+  a.from = call.from;
+  a.amount = call.inputs._amount;
+  a.txHash = call.transaction.hash;
+  a.blockNumber = call.block.number;
+  a.timestamp = call.block.timestamp;
+  a.save();
 }
